@@ -8,7 +8,13 @@ import { solveSchedule } from './lib/solver.js'
 import { modules as mockModules, class_indexes as mockClassIndexes } from './mockData.js'
 
 const app = express()
-app.use(cors())
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://ntustarwarsapp.vercel.app'
+  ],
+  credentials: true
+}))
 app.use(express.json())
 
 let supabase = null
