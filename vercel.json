@@ -1,15 +1,7 @@
 {
-  "version": 2,
   "buildCommand": "cd apps/web && npm install && npm run build",
   "outputDirectory": "apps/web/dist",
   "installCommand": "cd api && npm install && cd ../apps/api && npm install && cd ../apps/web && npm install",
-  "functions": {
-    "api/serverless.js": {
-      "runtime": "nodejs18.x",
-      "memory": 1024,
-      "maxDuration": 10
-    }
-  },
   "rewrites": [
     {
       "source": "/api/:path*",
