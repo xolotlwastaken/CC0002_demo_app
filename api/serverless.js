@@ -1,8 +1,9 @@
-// Vercel Serverless Function Wrapper
-// This wraps the Express app from apps/api as a serverless function
+// Vercel Serverless Function Handler
+// Wraps Express app for serverless execution
 
 import app from '../apps/api/index.js'
 
-// Export the Express app for Vercel serverless
+// Vercel expects a function that handles (req, res)
+// Express app already is that function!
 export default app
 
