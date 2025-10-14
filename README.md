@@ -112,6 +112,66 @@ npm run dev
 
 Visit **http://localhost:5173** and start planning! 🎉
 
+---
+
+## 🌐 Deployment
+
+Ready to deploy your planner to the world? Choose your approach:
+
+### 🎯 Option 1: Monorepo Deployment (Recommended)
+
+Deploy **both frontend and backend together** as a single app:
+
+```powershell
+# One command from project root
+vercel --prod
+```
+
+**Benefits:**
+- ✅ Single URL (e.g., `https://ntu-planner.vercel.app`)
+- ✅ No CORS configuration needed
+- ✅ Simpler to manage and share
+- ✅ Perfect for demos and student projects
+
+**Quick Start:** 📘 **[MONOREPO-QUICKSTART.md](./MONOREPO-QUICKSTART.md)** (3 minutes)
+
+**Full Guide:** 📗 **[DEPLOY-MONOREPO.md](./DEPLOY-MONOREPO.md)**
+
+---
+
+### Option 2: Separate Deployments
+
+Deploy **frontend and backend as separate projects**:
+
+```powershell
+# Deploy API first
+cd apps/api
+vercel --prod
+
+# Then deploy frontend with API URL
+cd ../web
+vercel --prod
+```
+
+**Benefits:**
+- ✅ Independent scaling
+- ✅ Faster individual deploys
+- ✅ Better for production/team projects
+
+**Quick Start:** 📘 **[DEPLOY-QUICK.md](./DEPLOY-QUICK.md)** (5 minutes)
+
+**Full Guide:** 📗 **[DEPLOYMENT.md](./DEPLOYMENT.md)**
+
+---
+
+### 🤔 Not Sure Which to Choose?
+
+See **[WHICH-DEPLOYMENT.md](./WHICH-DEPLOYMENT.md)** for a detailed comparison.
+
+**TL;DR for students:** Use **Monorepo** (Option 1) ⭐
+
+---
+
 ## 📖 How to Use
 
 1. **Search Modules** — Type a course code (e.g., "CZ2001") or keyword in the search box
