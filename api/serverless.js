@@ -1,10 +1,8 @@
 // Vercel Serverless Function Wrapper
-// This file re-exports the Express app from apps/api as a serverless function
+// This wraps the Express app from apps/api as a serverless function
 
-import('../apps/api/index.js').then(module => {
-  // The Express app is the default export
-  module.default || module.app
-})
+import app from '../apps/api/index.js'
 
-// Import and re-export the Express app
-export { default } from '../apps/api/index.js'
+// Export the Express app for Vercel serverless
+export default app
+
