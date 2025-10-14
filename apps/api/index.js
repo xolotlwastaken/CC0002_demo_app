@@ -79,13 +79,11 @@ app.post('/schedule/auto', async (req, res) => {
   res.json(solution)
 })
 
-// Start server only in development (not in Vercel serverless)
-if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
-  const port = process.env.PORT || 4000
-  app.listen(port, () => {
-    console.log(`API listening on :${port}`)
-  })
-}
+// Start server (for local development and Vercel)
+const port = process.env.PORT || 4000
+app.listen(port, () => {
+  console.log(`API listening on :${port}`)
+})
 
 // Export for Vercel serverless deployment
 export default app
