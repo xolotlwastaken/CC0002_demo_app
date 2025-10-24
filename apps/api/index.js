@@ -5,7 +5,7 @@ import { createClient } from '@supabase/supabase-js'
 import { z } from 'zod'
 import { parsePreferences } from './lib/prefsParser.js'
 import { solveSchedule } from './lib/solver.js'
-import { modules as mockModules, class_indexes as mockClassIndexes } from './mockData.js'
+import { modules as mockModules, class_indexes as mockClassIndexes, prerequisites as mockPrerequisites } from './mockData.js'
 
 const app = express()
 app.use(cors({
@@ -39,6 +39,63 @@ app.get('/modules', async (req, res) => {
   const { data, error } = await query
   if (error) return res.status(500).json({ error: error.message })
   res.json(data || [])
+})
+
+// Get detailed module information including prerequisites and class indexes
+app.get('/modules/:code/details', async (req, res) => {
+  const code = req.params.code.toUpperCase()
+  
+  if (!supabase) {
+    const module = mockModules.find(m => m.code === code)
+    if (!module) return res.status(404).json({ error: 'Module not found' })
+    
+    const indexes = mockClassIndexes
+      .filter(ci => ci.module_code === code)
+      .sort((a,b) => (a.day_of_week - b.day_of_week) || a.start_time.localeCompare(b.start_time))
+    
+    const prerequisites = mockPrerequisites
+      .filter(p => p.module_code === code)
+      .map(p => ({
+        code: p.requires_code,
+        title: mockModules.find(m => m.code === p.requires_code)?.title || p.requires_code
+      }))
+    
+    return res.json({ ...module, indexes, prerequisites })
+  }
+  
+  // Fetch from Supabase
+  const { data: module, error: modError } = await supabase
+    .from('modules')
+    .select('*')
+    .eq('code', code)
+    .single()
+  
+  if (modError) return res.status(404).json({ error: 'Module not found' })
+  
+  const { data: indexes } = await supabase
+    .from('class_indexes')
+    .select('*')
+    .eq('module_code', code)
+    .order('day_of_week')
+    .order('start_time')
+  
+  const { data: prereqData } = await supabase
+    .from('prerequisites')
+    .select('requires_code')
+    .eq('module_code', code)
+  
+  const prerequisites = await Promise.all(
+    (prereqData || []).map(async (p) => {
+      const { data } = await supabase
+        .from('modules')
+        .select('code, title')
+        .eq('code', p.requires_code)
+        .single()
+      return data || { code: p.requires_code, title: p.requires_code }
+    })
+  )
+  
+  res.json({ ...module, indexes: indexes || [], prerequisites })
 })
 
 app.get('/modules/:code/indexes', async (req, res) => {

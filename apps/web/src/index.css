@@ -184,6 +184,29 @@ body {
   font-weight: 600;
 }
 
+.module-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-details {
+  padding: 6px 12px;
+  background: #f0f0f0;
+  color: #333;
+  border: 1px solid var(--border);
+  font-size: 18px;
+  min-width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-details:hover {
+  background: #e0e0e0;
+  border-color: #999;
+}
+
 /* Selected List */
 .selected-list {
   min-height: 150px;

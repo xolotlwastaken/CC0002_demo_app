@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { api } from './api'
+import ModuleDetailsModal from './ModuleDetailsModal'
+import ConfirmDialog from './ConfirmDialog'
 
 function Timetable({ blocks }) {
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
@@ -76,6 +78,8 @@ export default function App() {
   const [solution, setSolution] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [selectedModuleForDetails, setSelectedModuleForDetails] = useState(null)
+  const [confirmDialog, setConfirmDialog] = useState(null)
 
   useEffect(() => {
     (async () => {
@@ -119,16 +123,49 @@ export default function App() {
     }
   }
 
-  const addModule = (module) => {
-    if (!selected.some(s => s.code === module.code)) {
+  const addModule = async (module) => {
+    if (selected.some(s => s.code === module.code)) return
+
+    // Fetch prerequisites
+    try {
+      const { data } = await api.get(`/modules/${module.code}/details`)
+      
+      if (data.prerequisites && data.prerequisites.length > 0) {
+        // Show confirmation dialog with prerequisites
+        setConfirmDialog({
+          title: `Add ${module.code}?`,
+          message: null,
+          prerequisites: data.prerequisites,
+          module: module,
+          onConfirm: () => {
+            setSelected(prev => [...prev, module])
+            setSolution(null)
+            setConfirmDialog(null)
+          },
+          onCancel: () => {
+            setConfirmDialog(null)
+          }
+        })
+      } else {
+        // No prerequisites, add directly
+        setSelected(prev => [...prev, module])
+        setSolution(null)
+      }
+    } catch (err) {
+      console.error('Failed to check prerequisites:', err)
+      // If we can't check prerequisites, add anyway
       setSelected(prev => [...prev, module])
-      setSolution(null) // Clear solution when modules change
+      setSolution(null)
     }
   }
 
   const removeModule = (code) => {
     setSelected(prev => prev.filter(s => s.code !== code))
     setSolution(null) // Clear solution when modules change
+  }
+
+  const viewModuleDetails = (moduleCode) => {
+    setSelectedModuleForDetails(moduleCode)
   }
 
   return (
@@ -161,13 +198,22 @@ export default function App() {
                     <span className="module-title">{m.title}</span>
                     <span className="module-au">{m.au} AU</span>
                   </div>
-                  <button 
-                    className="btn-add"
-                    onClick={() => addModule(m)}
-                    disabled={selected.some(s => s.code === m.code)}
-                  >
-                    {selected.some(s => s.code === m.code) ? '✓' : '+'}
-                  </button>
+                  <div className="module-actions">
+                    <button 
+                      className="btn-details"
+                      onClick={() => viewModuleDetails(m.code)}
+                      title="View details"
+                    >
+                      ℹ️
+                    </button>
+                    <button 
+                      className="btn-add"
+                      onClick={() => addModule(m)}
+                      disabled={selected.some(s => s.code === m.code)}
+                    >
+                      {selected.some(s => s.code === m.code) ? '✓' : '+'}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -259,6 +305,24 @@ export default function App() {
           </>
         )}
       </div>
+
+      {/* Module Details Modal */}
+      <ModuleDetailsModal
+        moduleCode={selectedModuleForDetails}
+        onClose={() => setSelectedModuleForDetails(null)}
+        onAdd={(module) => addModule(module)}
+      />
+
+      {/* Prerequisite Confirmation Dialog */}
+      {confirmDialog && (
+        <ConfirmDialog
+          title={confirmDialog.title}
+          message={confirmDialog.message}
+          prerequisites={confirmDialog.prerequisites}
+          onConfirm={confirmDialog.onConfirm}
+          onCancel={confirmDialog.onCancel}
+        />
+      )}
     </div>
   )
 }

@@ -111,3 +111,26 @@ export const class_indexes = [
   { module_code: 'CZ4034', index_code: '1502', day_of_week: 3, start_time: '10:30', end_time: '12:30', venue: 'LT16', type: 'LEC', capacity: 100 },
   { module_code: 'CZ4034', index_code: '1502', day_of_week: 5, start_time: '12:30', end_time: '13:30', venue: 'TR+11', type: 'TUT', capacity: 40 }
 ]
+
+export const prerequisites = [
+  // Year 2 prerequisites
+  { module_code: 'CZ2001', requires_code: 'CZ1007' }, // Algorithms needs Data Structures
+  { module_code: 'CZ2002', requires_code: 'CZ1007' }, // Database needs Data Structures
+  { module_code: 'CZ2005', requires_code: 'CZ1007' }, // OS needs Data Structures
+  { module_code: 'CZ2006', requires_code: 'CZ2001' }, // SE needs Algorithms
+  
+  // Year 3 prerequisites
+  { module_code: 'CZ3001', requires_code: 'CZ1006' }, // Adv Arch needs Computer Architecture
+  { module_code: 'CZ3003', requires_code: 'CZ2006' }, // Systems Analysis needs SE
+  { module_code: 'CZ3004', requires_code: 'CZ3005' }, // MDP needs AI
+  { module_code: 'CZ3005', requires_code: 'CZ2001' }, // AI needs Algorithms
+  { module_code: 'CZ3006', requires_code: 'CZ2002' }, // Net-Centric needs Database
+  { module_code: 'CZ3007', requires_code: 'CZ2001' }, // Compiler needs Algorithms
+  
+  // Year 4 prerequisites
+  { module_code: 'CZ4001', requires_code: 'CZ3005' }, // VR/AR needs AI
+  { module_code: 'CZ4003', requires_code: 'CZ3005' }, // Computer Vision needs AI
+  { module_code: 'CZ4013', requires_code: 'CZ2005' }, // Distributed Systems needs OS
+  { module_code: 'CZ4031', requires_code: 'CZ2002' }, // DB Principles needs Database Systems
+  { module_code: 'CZ4034', requires_code: 'CZ2001' }  // Info Retrieval needs Algorithms
+]
