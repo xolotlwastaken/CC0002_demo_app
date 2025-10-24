@@ -113,13 +113,7 @@ export const class_indexes = [
 ]
 
 export const prerequisites = [
-  // Year 2 prerequisites
-  { module_code: 'CZ2001', requires_code: 'CZ1007' }, // Algorithms needs Data Structures
-  { module_code: 'CZ2002', requires_code: 'CZ1007' }, // Database needs Data Structures
-  { module_code: 'CZ2005', requires_code: 'CZ1007' }, // OS needs Data Structures
-  { module_code: 'CZ2006', requires_code: 'CZ2001' }, // SE needs Algorithms
-  
-  // Year 3 prerequisites
+  // Year 3 prerequisites only
   { module_code: 'CZ3001', requires_code: 'CZ1006' }, // Adv Arch needs Computer Architecture
   { module_code: 'CZ3003', requires_code: 'CZ2006' }, // Systems Analysis needs SE
   { module_code: 'CZ3004', requires_code: 'CZ3005' }, // MDP needs AI
@@ -127,7 +121,7 @@ export const prerequisites = [
   { module_code: 'CZ3006', requires_code: 'CZ2002' }, // Net-Centric needs Database
   { module_code: 'CZ3007', requires_code: 'CZ2001' }, // Compiler needs Algorithms
   
-  // Year 4 prerequisites
+  // Year 4 prerequisites only
   { module_code: 'CZ4001', requires_code: 'CZ3005' }, // VR/AR needs AI
   { module_code: 'CZ4003', requires_code: 'CZ3005' }, // Computer Vision needs AI
   { module_code: 'CZ4013', requires_code: 'CZ2005' }, // Distributed Systems needs OS

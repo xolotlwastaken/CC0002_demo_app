@@ -131,21 +131,32 @@ export default function App() {
       const { data } = await api.get(`/modules/${module.code}/details`)
       
       if (data.prerequisites && data.prerequisites.length > 0) {
-        // Show confirmation dialog with prerequisites
-        setConfirmDialog({
-          title: `Add ${module.code}?`,
-          message: null,
-          prerequisites: data.prerequisites,
-          module: module,
-          onConfirm: () => {
-            setSelected(prev => [...prev, module])
-            setSolution(null)
-            setConfirmDialog(null)
-          },
-          onCancel: () => {
-            setConfirmDialog(null)
-          }
-        })
+        // Filter out prerequisites that are already selected
+        const missingPrerequisites = data.prerequisites.filter(
+          prereq => !selected.some(s => s.code === prereq.code)
+        )
+        
+        if (missingPrerequisites.length > 0) {
+          // Show confirmation dialog only for missing prerequisites
+          setConfirmDialog({
+            title: `Add ${module.code}?`,
+            message: null,
+            prerequisites: missingPrerequisites,
+            module: module,
+            onConfirm: () => {
+              setSelected(prev => [...prev, module])
+              setSolution(null)
+              setConfirmDialog(null)
+            },
+            onCancel: () => {
+              setConfirmDialog(null)
+            }
+          })
+        } else {
+          // All prerequisites are already selected, add directly
+          setSelected(prev => [...prev, module])
+          setSolution(null)
+        }
       } else {
         // No prerequisites, add directly
         setSelected(prev => [...prev, module])
@@ -288,9 +299,9 @@ export default function App() {
         {solution && (
           <>
             <div className="solution-stats">
-              <span>📊 Score: {solution.score.toFixed(1)}</span>
+              <span>� Total AUs: {selected.reduce((sum, mod) => sum + mod.au, 0)}</span>
               <span>📅 Days: {new Set(solution.assignments.map(a => a.day_of_week)).size}</span>
-              <span>📚 Classes: {solution.assignments.length}</span>
+              <span>🏫 Classes: {solution.assignments.length}</span>
             </div>
             <Timetable
               blocks={solution.assignments.map(a => ({
